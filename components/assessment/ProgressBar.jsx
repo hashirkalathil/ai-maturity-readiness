@@ -5,13 +5,13 @@ export default function ProgressBar({ currentStep, totalSteps }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between text-sm font-medium text-slate-600">
+      <div className="flex items-center justify-between text-sm font-medium text-gray-600">
         <span>{`Question ${currentStep} of ${totalSteps}`}</span>
         <span>{`${progress}% complete`}</span>
       </div>
-      <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+      <div className="h-3 overflow-hidden rounded-full bg-gray-200">
         <div
-          className="h-full rounded-full bg-linear-to-r from-cyan-600 via-teal-500 to-lime-500 transition-all duration-300"
+          className="h-full rounded-full bg-linear-to-r from-gray-600 via-gray-500 to-gray-500 transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -20,7 +20,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
           <div
             key={index}
             className={`h-2 rounded-full transition-colors ${
-              index < currentStep ? 'bg-cyan-600' : 'bg-slate-200'
+              index < currentStep ? 'bg-gray-600' : 'bg-gray-200'
             }`}
           />
         ))}

@@ -19,9 +19,7 @@ export default function DimensionBadge({ dimension }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] ${
-        dimensionStyles[dimension] || 'bg-slate-100 text-slate-800'
-      }`}
+      className={`inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider bg-gray-100 text-gray-800`}
     >
       {DIMENSION_LABELS[dimension] || dimension}
     </span>
