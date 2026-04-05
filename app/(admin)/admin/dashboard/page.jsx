@@ -7,6 +7,8 @@ import ScoreTrendChart from '@/components/admin/ScoreTrendChart'
 import { DIMENSION_ORDER, MATURITY_LEVELS } from '@/constants/dimensions'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 function formatIndustryLabel(industry) {
   return String(industry || '')
     .split('-')
@@ -147,15 +149,8 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
+        <p className="text-xl font-bold uppercase tracking-wider text-gray-900">
           Admin Dashboard
-        </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-          Assessment analytics
-        </h1>
-        <p className="mt-3 max-w-3xl text-base leading-8 text-slate-600">
-          Track adoption, maturity distribution, and industry patterns across all
-          submitted AI maturity assessments.
         </p>
       </div>
 
@@ -167,15 +162,13 @@ export default async function AdminDashboardPage() {
         topIndustry={topIndustry}
       />
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid gap-6 grid-cols-2">
         <MaturityDistributionChart data={levelCounts} />
-        <DimensionAvgRadar data={avgDimensionData} />
+        <IndustryBreakdownChart data={industryData} />
       </div>
 
-      <ScoreTrendChart data={trendDays} />
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        <IndustryBreakdownChart data={industryData} />
+      <div className="grid grid-cols-1">
         <DimensionHeatmap data={heatmapData} />
       </div>
     </div>

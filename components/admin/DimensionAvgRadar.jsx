@@ -33,7 +33,7 @@ export default function DimensionAvgRadar({ data }) {
   }))
 
   return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <h2 className="text-2xl font-semibold text-slate-950">Average dimension profile</h2>
       <div className="mt-6 h-[360px]">
         <ResponsiveContainer width="100%" height="100%">

@@ -2,6 +2,8 @@ import ResponsesTable from '@/components/admin/ResponsesTable'
 import { requireAdminSession } from '@/lib/adminAuth'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+export const dynamic = 'force-dynamic'
+
 function applyResponseFilters(query, params) {
   if (params.search) {
     query = query.or(
@@ -65,9 +67,6 @@ export default async function AdminResponsesPage({ searchParams }) {
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
           Responses
         </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-          Browse submitted assessments
-        </h1>
       </div>
 
       <ResponsesTable

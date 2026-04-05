@@ -20,8 +20,8 @@ function getCellColor(score) {
 
 export default function DimensionHeatmap({ data }) {
   return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <h2 className="text-2xl font-semibold text-slate-950">Industry x dimension heatmap</h2>
+    <div className="rounded-xl border border-slate-200 bg-white py-4 px-6 shadow-sm">
+      <h2 className="text-xl font-semibold text-slate-950 uppercase">Industry x dimension heatmap</h2>
       <div className="mt-6 overflow-auto">
         <div className="min-w-[900px]">
           <div className="grid grid-cols-[180px_repeat(7,minmax(110px,1fr))] gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -32,13 +32,13 @@ export default function DimensionHeatmap({ data }) {
               </div>
             ))}
           </div>
-          <div className="mt-3 space-y-2">
+          <div className="mt-1 space-y-1">
             {data.map((row) => (
               <div
                 key={row.industry}
                 className="grid grid-cols-[180px_repeat(7,minmax(110px,1fr))] gap-2"
               >
-                <div className="sticky left-0 flex items-center rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800">
+                <div className="sticky left-0 flex items-center rounded-lg bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800">
                   {row.label}
                 </div>
                 {DIMENSION_ORDER.map((dimension) => {
@@ -46,7 +46,7 @@ export default function DimensionHeatmap({ data }) {
                   return (
                     <div
                       key={`${row.industry}-${dimension}`}
-                      className={`flex items-center justify-center rounded-2xl px-3 py-3 text-sm font-semibold text-slate-800 ${getCellColor(score)}`}
+                      className={`flex items-center justify-center rounded-lg p-2 text-sm font-semibold text-slate-800 ${getCellColor(score)}`}
                     >
                       {score ? score.toFixed(2) : '-'}
                     </div>

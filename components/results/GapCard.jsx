@@ -1,34 +1,37 @@
 import { AlertCircle } from 'lucide-react'
-
 import { DIMENSION_LABELS } from '@/constants/dimensions'
 
 export default function GapCard({ gap }) {
   return (
-    <article className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              {DIMENSION_LABELS[gap.dimension] || gap.dimension}
-            </p>
-            {gap.isBlocker ? (
-              <span className="rounded-full bg-rose-100 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-rose-700">
-                Blocker
-              </span>
-            ) : null}
-          </div>
-          <h3 className="mt-3 text-xl font-semibold text-slate-950">
-            {gap.headline}
-          </h3>
+    <article className="w-full flex items-start justify-between bg-rose-50 rounded-xl gap-6 border border-rose-200 py-4 px-6">
+      <div className="flex-1">
+        <div className="flex items-center gap-3 mb-1">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            {DIMENSION_LABELS[gap.dimension] || gap.dimension}
+          </span>
+
+          {gap.isBlocker && (
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-rose-600">
+              Blocker
+            </span>
+          )}
+
+          <AlertCircle className="h-4 w-4 text-rose-500" />
         </div>
-        <div className="rounded-2xl bg-rose-100 p-3 text-rose-700">
-          <AlertCircle className="h-5 w-5" />
-        </div>
+
+        <h3 className="text-sm font-semibold text-slate-900">
+          {gap.headline}
+        </h3>
+
+        <p className="mt-1 text-sm text-slate-600">
+          {gap.risk}
+        </p>
       </div>
-      <p className="mt-4 text-sm font-semibold text-rose-700">
-        {`Score ${Number(gap.score || 0).toFixed(2)}`}
-      </p>
-      <p className="mt-3 text-sm leading-7 text-slate-600">{gap.risk}</p>
+
+      <div className="flex items-center text-sm font-semibold text-rose-600">
+        {Number(gap.score || 0).toFixed(2)}
+      </div>
+
     </article>
   )
 }

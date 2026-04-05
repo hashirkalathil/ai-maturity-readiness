@@ -35,12 +35,9 @@ export default function QuestionsList({ questions, industries }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
+          <p className="text-sm font-semibold uppercase tracking-wider text-cyan-700">
             Question Manager
           </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-            Assessment question bank
-          </h1>
         </div>
         <Button
           onClick={() => {
@@ -55,10 +52,10 @@ export default function QuestionsList({ questions, industries }) {
       {Object.entries(groupedQuestions).map(([dimension, items]) => (
         <details
           key={dimension}
-          className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+          className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
           open
         >
-          <summary className="cursor-pointer text-xl font-semibold text-slate-950">
+          <summary className="cursor-pointer text-xl font-bold text-slate-950">
             {dimension}
           </summary>
           <div className="mt-5 space-y-3">
@@ -69,8 +66,8 @@ export default function QuestionsList({ questions, industries }) {
               >
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Badge variant="info">{question.question_id}</Badge>
-                    <Badge variant={question.scope === 'global' ? 'neutral' : 'warning'}>
+                    <Badge variant="info" size='sm'>{question.question_id}</Badge>
+                    <Badge variant={question.scope === 'global' ? 'neutral' : 'warning'} size='sm'>
                       {question.scope}
                     </Badge>
                     {question.industries?.map((industry) => (

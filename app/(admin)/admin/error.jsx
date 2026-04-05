@@ -11,7 +11,7 @@ export default function Error({ error, unstable_retry }) {
 
   return (
     <main className="flex min-h-[70vh] items-center justify-center px-6">
-      <div className="max-w-lg rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="max-w-lg rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
         <h1 className="text-3xl font-semibold text-slate-950">
           Admin section unavailable
         </h1>

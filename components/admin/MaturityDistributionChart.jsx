@@ -22,9 +22,9 @@ function TooltipContent({ active, payload }) {
 
 export default function MaturityDistributionChart({ data }) {
   return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <h2 className="text-2xl font-semibold text-slate-950">Maturity distribution</h2>
-      <div className="mt-6 h-[320px]">
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="text-xl uppercase font-semibold text-slate-950">Maturity distribution</h2>
+      <div className="mt-4 h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <XAxis dataKey="shortLabel" tick={{ fill: '#475569', fontSize: 12 }} />

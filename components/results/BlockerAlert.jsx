@@ -12,9 +12,6 @@ export default function BlockerAlert({ blockerDimension, dimensionScores }) {
   return (
     <section className="rounded-xl border border-rose-200 bg-rose-50 px-6 py-5 shadow-sm">
       <div className="flex items-start gap-4">
-        <div className="rounded-2xl bg-rose-100 p-3 text-rose-700">
-          <AlertTriangle className="h-6 w-6" />
-        </div>
         <div>
           <h2 className="text-xl font-semibold text-rose-900">
             {`Critical Gap Detected - ${DIMENSION_LABELS[blockerDimension] || blockerDimension} scored ${blockerScore} (below 2.0)`}

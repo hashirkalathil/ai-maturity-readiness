@@ -11,12 +11,12 @@ export default async function AdminLayout({ children }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <div className="hidden lg:block">
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      <div className="hidden lg:block h-full">
         <Sidebar />
       </div>
-      <div className="flex min-h-screen flex-1 flex-col">
-        <main className="flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+      <div className="flex h-full flex-1 flex-col overflow-hidden">
+        <main className="flex-1 px-10 py-16 overflow-y-auto">
           {children}
         </main>
       </div>

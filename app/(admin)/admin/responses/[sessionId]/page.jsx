@@ -9,6 +9,7 @@ import StrengthCard from '@/components/results/StrengthCard'
 import Badge from '@/components/ui/Badge'
 import { requireAdminSession } from '@/lib/adminAuth'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { Circle } from 'lucide-react'
 
 export default async function AdminResponseDetailPage({ params }) {
   await requireAdminSession()
@@ -33,14 +34,14 @@ export default async function AdminResponseDetailPage({ params }) {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
               Response Detail
             </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
-              {response.session_id}
+            <h1 className="mt-3 text-xl font-semibold tracking-tight text-slate-950">
+              Session id: {response.session_id}
             </h1>
             <p className="mt-3 text-sm leading-7 text-slate-600">
               {`${response.industry} | ${response.org_size} | ${new Date(response.completed_at).toLocaleString()}`}
@@ -59,51 +60,84 @@ export default async function AdminResponseDetailPage({ params }) {
       />
 
       <section className="space-y-5">
-        <h2 className="text-2xl font-semibold text-slate-950">Strengths</h2>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div>
+          <h1 className="text-xl font-semibold uppercase tracking-wider text-emerald-700">
+            Strengths
+          </h1>
+        </div>
+        <div className="grid gap-1 grid-cols-1">
           {(report.keyStrengths || []).map((strength) => (
-            <StrengthCard key={strength.headline} strength={strength} />
+            <div className="w-full flex flex-row gap-4 items-center" key={strength.headline}>
+              <Circle className="h-4 w-4 text-emerald-500 mt-2" />
+              <StrengthCard strength={strength} />
+            </div>
           ))}
         </div>
       </section>
 
       <section className="space-y-5">
-        <h2 className="text-2xl font-semibold text-slate-950">Gaps</h2>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div>
+          <h1 className="text-xl font-semibold uppercase tracking-wider text-rose-700">
+            Gaps
+          </h1>
+        </div>
+        <div className="grid gap-1 grid-cols-1">
           {(report.keyGaps || []).map((gap) => (
-            <GapCard key={gap.headline} gap={gap} />
+            <div className="w-full flex flex-row gap-4 items-center" key={gap.headline}>
+              <Circle className="h-4 w-4 text-rose-500 mt-2" />
+              <GapCard gap={gap} />
+            </div>
           ))}
         </div>
       </section>
 
       <section className="space-y-5">
-        <h2 className="text-2xl font-semibold text-slate-950">Opportunities</h2>
-        <div className="grid gap-6 lg:grid-cols-3">
-          {(report.immediateOpportunities || []).map((opportunity) => (
-            <OpportunityCard key={opportunity.title} opportunity={opportunity} />
+        <div>
+          <p className="text-xl font-semibold uppercase tracking-wider text-cyan-700">
+            Immediate next moves
+          </p>
+        </div>
+        <div className="grid gap-1 grid-cols-1">
+          {(report.immediateOpportunities || []).map((opportunity, index) => (
+            <OpportunityCard
+              key={opportunity.title}
+              opportunity={opportunity}
+              step={index + 1}
+            />
           ))}
         </div>
       </section>
 
       <section className="space-y-5">
-        <h2 className="text-2xl font-semibold text-slate-950">Risks</h2>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div>
+          <p className="text-xl font-semibold uppercase tracking-wider text-amber-700">
+            Risks and blockers
+          </p>
+        </div>
+        <div className="grid gap-1 grid-cols-1">
           {(report.risksAndBlockers || []).map((risk, index) => (
-            <RiskCard key={`${risk.risk}-${index}`} risk={risk} />
+            <div className="w-full flex flex-row gap-4 items-center" key={`${risk.risk}-${index}`}>
+              <Circle className="h-4 w-4 text-amber-500 mt-2" />
+              <RiskCard risk={risk} />
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-slate-950">Roadmap</h2>
-        <p className="mt-4 text-base leading-8 text-slate-600">
+      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+        <p className="text-sm font-bold uppercase tracking-wider text-slate-500">
+          Roadmap
+        </p>
+        <p className="mt-5 text-base leading-6 text-slate-600">
           {report.roadmapRecommendation}
         </p>
       </section>
 
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-slate-950">Individual answers</h2>
-        <div className="mt-6 space-y-3">
+      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+        <p className="text-sm font-bold uppercase tracking-wider text-slate-500">
+          Individual answers
+        </p>
+        <div className="mt-5 space-y-3">
           {Object.entries(response.answers || {}).map(([questionId, score]) => {
             const question = questionMap.get(questionId)
             const option = question?.options?.find(
@@ -113,15 +147,15 @@ export default async function AdminResponseDetailPage({ params }) {
             return (
               <details
                 key={questionId}
-                className="rounded-2xl border border-slate-200 px-5 py-4"
+                className="rounded-lg border border-slate-200 px-5 py-4"
               >
-                <summary className="cursor-pointer font-semibold text-slate-900">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-900">
                   {question?.question_text || `Question ${questionId}`}
                 </summary>
-                <p className="mt-3 text-sm font-medium text-cyan-700">
+                <p className="mt-4 text-sm font-medium text-cyan-700">
                   {`Selected score ${score}`}
                 </p>
-                <p className="mt-2 text-sm leading-7 text-slate-600">
+                <p className="mt-2 text-sm leading-6 text-slate-600">
                   {option?.text || 'Answer text unavailable.'}
                 </p>
               </details>

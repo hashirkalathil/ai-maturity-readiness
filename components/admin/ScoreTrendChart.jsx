@@ -29,7 +29,7 @@ function TooltipContent({ active, payload, label }) {
 
 export default function ScoreTrendChart({ data }) {
   return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <h2 className="text-2xl font-semibold text-slate-950">30-day trend</h2>
       <div className="mt-6 h-[340px]">
         <ResponsiveContainer width="100%" height="100%">

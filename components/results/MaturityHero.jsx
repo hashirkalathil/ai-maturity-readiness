@@ -43,11 +43,11 @@ export default function MaturityHero({
             {`Raw score ${Number(rawOverallScore).toFixed(2)}`}
           </p>
         )}
-        <p className="mt-6 text-left text-md text-slate-600">
+        <p className="mt-6 text-left text-md text-slate-800">
           {executiveSummary}
         </p>
         {maturityNarrative ? (
-          <p className="mt-4 text-left text-md text-slate-500">
+          <p className="mt-4 text-left text-md text-slate-800">
             {maturityNarrative}
           </p>
         ) : null}

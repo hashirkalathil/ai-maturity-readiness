@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import { requireAdminSession, unauthorizedJson } from '@/lib/adminAuth'
@@ -40,6 +41,9 @@ export async function DELETE(_request, { params }) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  revalidatePath('/admin/responses')
+  revalidatePath('/admin/dashboard')
 
   return NextResponse.json({ success: true })
 }

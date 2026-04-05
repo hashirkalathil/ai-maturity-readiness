@@ -1,6 +1,6 @@
 'use client'
 
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
 
 import { DIMENSION_LABELS, DIMENSION_ORDER } from '@/constants/dimensions'
 
@@ -42,6 +42,7 @@ export default function DimensionRadarChart({ dimensionScores }) {
           <RadarChart data={data}>
             <PolarGrid stroke="#d6d6d6" />
             <PolarAngleAxis dataKey="label" tick={{ fill: '#000', fontSize: 12 }} />
+            <PolarRadiusAxis domain={[0, 5]} tickCount={6} />
             <Tooltip content={<TooltipContent />} />
             <Radar name="Score" dataKey="score" stroke="#000" fill="#4d4d4d" fillOpacity={0.3} />
           </RadarChart>

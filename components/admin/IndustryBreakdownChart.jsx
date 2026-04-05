@@ -19,8 +19,8 @@ function TooltipContent({ active, payload }) {
 
 export default function IndustryBreakdownChart({ data }) {
   return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <h2 className="text-2xl font-semibold text-slate-950">Industry performance</h2>
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="text-xl font-semibold text-slate-950 uppercase">Industry performance</h2>
       <div className="mt-6 h-[360px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart layout="vertical" data={data} margin={{ left: 10, right: 30 }}>

@@ -31,12 +31,12 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-full max-w-[280px] flex-col border-r border-slate-200 bg-white px-5 py-6">
-      <div className="mb-8 rounded-[2rem] bg-slate-950 px-5 py-6 text-white">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cyan-300">
+    <aside className="flex h-full w-[280px] flex-col overflow-y-auto border-r border-slate-200 bg-white px-5 py-6">
+      <div className="mb-8 px-5 py-6">
+        <p className="text-xs font-semibold uppercase">
           AI Maturity Framework
         </p>
-        <h1 className="mt-3 text-2xl font-semibold">Admin Console</h1>
+        <h1 className="mt-3 text-xl uppercase font-semibold">Admin Console</h1>
       </div>
 
       <nav className="space-y-2">

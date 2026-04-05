@@ -36,12 +36,19 @@ export async function middleware(request) {
   } = await supabase.auth.getSession()
 
   const isAdminPath = request.nextUrl.pathname.startsWith('/admin')
+  const pathname = request.nextUrl.pathname;
   const isAdminLoginPath = request.nextUrl.pathname === '/admin/login'
 
   if (isAdminPath && !isAdminLoginPath && !session) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin/login'
     url.searchParams.set('redirectedFrom', request.nextUrl.pathname)
+    return NextResponse.redirect(url)
+  }
+
+  if (pathname === "/admin" && !isAdminLoginPath && session) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/admin/dashboard'
     return NextResponse.redirect(url)
   }
 

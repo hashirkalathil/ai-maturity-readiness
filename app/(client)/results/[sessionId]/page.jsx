@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import { FileText } from 'lucide-react'
-
+import Link from 'next/link'
+import { Circle, FileText, Home } from 'lucide-react'
 import { MATURITY_LEVELS } from '@/constants/dimensions'
 import BlockerAlert from '@/components/results/BlockerAlert'
 import DimensionRadarChart from '@/components/results/DimensionRadarChart'
@@ -76,12 +76,88 @@ export default async function ResultsPage({ params }) {
             maturityNarrative={report.maturityNarrative}
           />
 
+          {response.blocker_dimension ? (
+            <BlockerAlert
+              blockerDimension={response.blocker_dimension}
+              dimensionScores={dimensionScores}
+            />
+          ) : null}
+
+          {response.uneven_maturity ? (
+            <UnevenMaturityBanner note={report.unevenMaturityNote} />
+          ) : null}
+
           <DimensionRadarChart dimensionScores={dimensionScores} />
 
           <DimensionScoreTable
             dimensionScores={dimensionScores}
             blockerDimension={response.blocker_dimension}
           />
+
+          <section className="space-y-5">
+            <div>
+              <h1 className="text-xl font-semibold uppercase tracking-wider text-emerald-700">
+                Strengths
+              </h1>
+            </div>
+            <div className="grid gap-1 grid-cols-1">
+              {strengths.map((strength) => (
+                <div className='w-full flex flex-row gap-4 items-center' key={strength.headline}>
+                  <Circle className='h-4 w-4 text-emerald-500 mt-2' />
+                  <StrengthCard strength={strength} />
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-5">
+            <div>
+              <h1 className="text-xl font-semibold uppercase tracking-wider text-rose-700">
+                Gaps
+              </h1>
+            </div>
+            <div className="grid gap-1 grid-cols-1">
+              {gaps.map((gap) => (
+                <div className='w-full flex flex-row gap-4 items-center' key={gap.headline}>
+                  <Circle className='h-4 w-4 text-rose-500 mt-2' />
+                  <GapCard gap={gap} />
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-5">
+            <div>
+              <p className="text-xl font-semibold uppercase tracking-wider text-cyan-700">
+                Immediate next moves
+              </p>
+            </div>
+            <div className="w-full grid gap-1 grid-cols-1">
+              {opportunities.map((opportunity, index) => (
+                <OpportunityCard
+                  key={opportunity.title}
+                  opportunity={opportunity}
+                  step={index + 1}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-5">
+            <div>
+              <p className="text-xl font-semibold uppercase tracking-wider text-amber-700">
+                Risks and blockers
+              </p>
+            </div>
+            <div className="grid gap-1 grid-cols-1">
+              {risks.map((risk, index) => (
+                <div className='w-full flex flex-row gap-4 items-center' key={`${risk.risk}-${index}`}>
+                  <Circle className='h-4 w-4 text-amber-500 mt-2' />
+                  <RiskCard risk={risk} />
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
             <p className="text-sm font-bold uppercase tracking-wider text-slate-500">
@@ -100,9 +176,28 @@ export default async function ResultsPage({ params }) {
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-950">
-                    Export
+                    Next Steps
                   </h2>
                 </div>
+              </div>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <Link
+                  href="/"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+                >
+                  <Home className="h-4 w-4" />
+                  Home
+                </Link>
+                <PDFDownloadButton
+                  orgSize={response.org_size}
+                  industry={industryLabel}
+                  maturityLevel={response.maturity_level}
+                  maturityLabel={response.maturity_label}
+                  overallScore={response.overall_score}
+                  accentColor={levelMeta.color}
+                  report={report}
+                  dimensionScores={dimensionScores}
+                />
               </div>
             </div>
           </section>

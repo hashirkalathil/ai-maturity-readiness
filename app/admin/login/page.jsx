@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <label className="block">
             <span className="mb-2 block text-sm font-semibold text-gray-700">
               Email
