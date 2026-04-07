@@ -4,6 +4,10 @@ import { requireAdminSession, unauthorizedJson } from '@/lib/adminAuth'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 function applyFilters(query, params) {
+  if (params.name) {
+    query = query.ilike('respondent_name', `%${params.name}%`)
+  }
+
   if (params.from) {
     query = query.gte('completed_at', params.from)
   }
@@ -42,6 +46,7 @@ export async function GET(request) {
   const url = new URL(request.url)
   const format = url.searchParams.get('format') || 'csv'
   const filters = {
+    name: url.searchParams.get('name') || '',
     from: url.searchParams.get('from') || '',
     to: url.searchParams.get('to') || '',
     industry: url.searchParams.getAll('industry'),
@@ -55,7 +60,9 @@ export async function GET(request) {
   while (true) {
     let query = supabaseAdmin
       .from('responses')
-      .select('*')
+      .select(
+        'session_id, respondent_name, completed_at, industry, org_size, overall_score, maturity_level, maturity_label, blocker_dimension, uneven_maturity, dimension_scores, raw_overall_score, answers, report'
+      )
       .order('completed_at', { ascending: false })
       .range(from, from + batchSize - 1)
 
@@ -85,6 +92,7 @@ export async function GET(request) {
 
   const headers = [
     'session_id',
+    'respondent_name',
     'completed_at',
     'industry',
     'org_size',
@@ -105,6 +113,7 @@ export async function GET(request) {
   const rows = allRows.map((row) =>
     [
       row.session_id,
+      row.respondent_name,
       row.completed_at,
       row.industry,
       row.org_size,

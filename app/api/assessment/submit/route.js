@@ -1,40 +1,21 @@
 import { NextResponse } from 'next/server'
-import { nanoid } from 'nanoid'
 
 import { generateGroqReport } from '@/lib/groqReport'
 import { runScoringPipeline } from '@/lib/scoring'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
-async function fetchAssessmentQuestions(industry) {
-  const [globalResult, industryResult] = await Promise.all([
-    supabaseAdmin
-      .from('questions')
-      .select('*')
-      .eq('scope', 'global')
-      .eq('is_active', true),
-    supabaseAdmin
-      .from('questions')
-      .select('*')
-      .eq('scope', 'industry')
-      .eq('is_active', true)
-      .contains('industries', [industry]),
-  ])
-
-  if (globalResult.error) {
-    throw globalResult.error
-  }
-
-  if (industryResult.error) {
-    throw industryResult.error
-  }
-
-  return [...(globalResult.data || []), ...(industryResult.data || [])]
-}
-
 export async function POST(request) {
   try {
     const body = await request.json()
-    const { companyName, orgSize, industry, industryLabel, answers } = body || {}
+    const {
+      orgSize,
+      industry,
+      industryLabel,
+      answers,
+      sessionId,
+      name,
+      questions: fallbackQuestions,
+    } = body || {}
 
     if (!orgSize || !industry || !answers || !Object.keys(answers).length) {
       return NextResponse.json(
@@ -43,14 +24,28 @@ export async function POST(request) {
       )
     }
 
-    const [questions, industryResult] = await Promise.all([
-      fetchAssessmentQuestions(industry),
+    if (!sessionId) {
+      return NextResponse.json({ error: 'sessionId required' }, { status: 400 })
+    }
+
+    const [{ data: sessionData, error: sessionErr }, industryResult] = await Promise.all([
+      supabaseAdmin
+        .from('session_questions')
+        .select('questions')
+        .eq('session_id', sessionId)
+        .single(),
       supabaseAdmin
         .from('industries')
         .select('label')
         .eq('slug', industry)
         .single(),
     ])
+
+    const questions = sessionData?.questions || fallbackQuestions || []
+
+    if (!questions.length) {
+      return NextResponse.json({ error: 'Session not found' }, { status: 400 })
+    }
 
     const scoring = runScoringPipeline(answers, questions)
     const resolvedIndustryLabel = industryLabel || industryResult.data?.label || industry
@@ -59,10 +54,10 @@ export async function POST(request) {
 
     try {
       report = await generateGroqReport({
-        companyName,
+        companyName: name,
         orgSize,
         industry,
-        industryLabel,
+        industryLabel: resolvedIndustryLabel,
         dimensionScores: scoring.dimensionScores,
         overallScore: scoring.overallScore,
         rawOverallScore: scoring.rawOverallScore,
@@ -93,13 +88,11 @@ export async function POST(request) {
       }
     }
 
-    const sessionId = nanoid(12)
     const { error } = await supabaseAdmin.from('responses').insert({
       session_id: sessionId,
-      company_name: companyName,
+      respondent_name: name || null,
       org_size: orgSize,
-      industry: industry,
-      industry_name: resolvedIndustryLabel,
+      industry,
       answers,
       dimension_scores: scoring.dimensionScores,
       raw_overall_score: scoring.rawOverallScore,

@@ -4,10 +4,12 @@ import { create } from 'zustand'
 
 const initialState = {
   sessionId: null,
+  respondentName: null,
   companyName: '',
   orgSize: null,
   industry: null,
   industryLabel: null,
+  dimensionAllocation: null,
   questions: [],
   currentStep: 0,
   answers: {},
@@ -17,14 +19,16 @@ const initialState = {
 
 export const useAssessmentStore = create((set, get) => ({
   ...initialState,
-  setContext: ({ companyName, orgSize, industry, industryLabel }) =>
+  setContext: ({ name, companyName, orgSize, industry, industryLabel }) =>
     set({
-      companyName,
+      respondentName: name ?? companyName ?? null,
+      companyName: companyName ?? name ?? '',
       orgSize,
       industry,
       industryLabel,
       currentStep: 0,
       questions: [],
+      dimensionAllocation: null,
       answers: {},
       isSubmitting: false,
       resultSessionId: null,
@@ -32,6 +36,12 @@ export const useAssessmentStore = create((set, get) => ({
   setQuestions: (questions) =>
     set({
       questions,
+    }),
+  setQuestionsAndSession: ({ questions, sessionId, dimensionAllocation }) =>
+    set({
+      questions,
+      sessionId,
+      dimensionAllocation,
     }),
   answerQuestion: (questionId, score) =>
     set((state) => ({
@@ -73,7 +83,8 @@ export const useAssessmentStore = create((set, get) => ({
     }
 
     const currentQuestion = get().getCurrentQuestion()
-    return Boolean(currentQuestion && answers[currentQuestion.id])
+    const questionKey = currentQuestion?.id || currentQuestion?.question_id
+    return Boolean(questionKey && answers[questionKey])
   },
   setSubmitting: (isSubmitting) =>
     set({

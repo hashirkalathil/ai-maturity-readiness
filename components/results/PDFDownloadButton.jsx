@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
 })
 
 function ReportPdfDocument({
+  respondentName,
   orgSize,
   industry,
   generatedAt,
@@ -134,6 +135,9 @@ function ReportPdfDocument({
 
         <Text style={styles.subtitle}>Industry: {industry}</Text>
         <Text style={styles.subtitle}>Organization Size: {orgSize}</Text>
+        {respondentName ? (
+          <Text style={styles.subtitle}>Prepared for: {respondentName}</Text>
+        ) : null}
         <Text style={styles.subtitle}>
           Maturity Level: {maturityLevel} – {maturityLabel}
         </Text>
@@ -277,6 +281,7 @@ function ReportPdfDocument({
 }
 
 export default function PDFDownloadButton({
+  respondentName,
   orgSize,
   industry,
   maturityLevel,
@@ -296,6 +301,7 @@ export default function PDFDownloadButton({
     <PDFDownloadLink
       document={
         <ReportPdfDocument
+          respondentName={respondentName}
           orgSize={orgSize}
           industry={industry}
           generatedAt={generatedAt}

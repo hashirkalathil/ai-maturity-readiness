@@ -14,10 +14,11 @@ export default function AssessmentStepPage() {
   const router = useRouter()
   const step = Number(params.step)
 
-  const companyName = useAssessmentStore((state) => state.companyName)
+  const respondentName = useAssessmentStore((state) => state.respondentName)
   const orgSize = useAssessmentStore((state) => state.orgSize)
   const industry = useAssessmentStore((state) => state.industry)
   const industryLabel = useAssessmentStore((state) => state.industryLabel)
+  const sessionId = useAssessmentStore((state) => state.sessionId)
   const questions = useAssessmentStore((state) => state.questions)
   const answers = useAssessmentStore((state) => state.answers)
   const isSubmitting = useAssessmentStore((state) => state.isSubmitting)
@@ -29,9 +30,11 @@ export default function AssessmentStepPage() {
   const [error, setError] = useState('')
   const totalSteps = questions.length
   const currentQuestion = useMemo(() => questions[step - 1] || null, [questions, step])
+  const currentQuestionKey = currentQuestion?.id || currentQuestion?.question_id
+  const currentQuestionText = currentQuestion?.questionText || currentQuestion?.question_text
 
   useEffect(() => {
-    if (!questions.length || !industry || !orgSize) {
+    if (!questions.length || !industry || !orgSize || !sessionId) {
       router.replace('/assessment')
       return
     }
@@ -42,10 +45,10 @@ export default function AssessmentStepPage() {
     }
 
     goToStep(step)
-  }, [goToStep, industry, orgSize, questions, router, step])
+  }, [goToStep, industry, orgSize, questions, router, sessionId, step])
 
   async function handleNext() {
-    if (!currentQuestion || !answers[currentQuestion.id]) {
+    if (!currentQuestionKey || !answers[currentQuestionKey]) {
       return
     }
 
@@ -65,10 +68,12 @@ export default function AssessmentStepPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          companyName,
+          name: respondentName,
           orgSize,
           industry,
           industryLabel,
+          sessionId,
+          questions,
           answers,
         }),
       })
@@ -111,7 +116,7 @@ export default function AssessmentStepPage() {
           <div className="mt-10 space-y-5">
             <div className="space-y-4">
               <h1 className="text-2xl font-semibold tracking-tight text-gray-950">
-                {currentQuestion.question_text}
+                {currentQuestionText}
               </h1>
             </div>
           </div>
@@ -123,8 +128,8 @@ export default function AssessmentStepPage() {
                 label={option.label}
                 score={option.score}
                 text={option.text}
-                selected={Number(answers[currentQuestion.id]) === Number(option.score)}
-                onClick={() => answerQuestion(currentQuestion.id, option.score)}
+                selected={Number(answers[currentQuestionKey]) === Number(option.score)}
+                onClick={() => answerQuestion(currentQuestionKey, option.score)}
               />
             ))}
           </div>
@@ -140,7 +145,7 @@ export default function AssessmentStepPage() {
               onBack={handleBack}
               onNext={handleNext}
               disableBack={step === 1}
-              disableNext={!answers[currentQuestion.id]}
+              disableNext={!answers[currentQuestionKey]}
               isLastStep={step === totalSteps}
               isSubmitting={isSubmitting}
             />

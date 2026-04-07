@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   ClipboardList,
   Download,
-  FileQuestion,
   LayoutDashboard,
   LogOut,
 } from 'lucide-react'
@@ -16,7 +15,6 @@ import { createClient } from '@/lib/supabase/client'
 const navItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Responses', href: '/admin/responses', icon: ClipboardList },
-  { label: 'Questions', href: '/admin/questions', icon: FileQuestion },
   { label: 'Export', href: '/admin/export', icon: Download },
 ]
 

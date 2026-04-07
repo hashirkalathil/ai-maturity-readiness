@@ -62,6 +62,15 @@ export default async function ResultsPage({ params }) {
     <main className="flex-1">
       <section className="mx-auto w-full max-w-6xl px-6 py-12 sm:px-10">
         <div className="space-y-8">
+          {response.respondent_name ? (
+            <p className="mb-6 text-lg text-gray-600">
+              Here are your results,{' '}
+              <span className="font-medium text-gray-900">
+                {response.respondent_name}
+              </span>
+              .
+            </p>
+          ) : null}
 
           <MaturityHero
             maturityLevel={response.maturity_level}
@@ -189,6 +198,7 @@ export default async function ResultsPage({ params }) {
                   Home
                 </Link>
                 <PDFDownloadButton
+                  respondentName={response.respondent_name}
                   orgSize={response.org_size}
                   industry={industryLabel}
                   maturityLevel={response.maturity_level}
