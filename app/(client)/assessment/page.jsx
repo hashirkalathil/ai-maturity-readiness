@@ -27,12 +27,7 @@ const regionOptions = [
 ]
 
 const generationMessages = [
-  'Crafting Business Strategy questions...',
-  'Preparing Data Readiness questions...',
-  'Building Technology Infrastructure questions...',
-  'Generating Talent & Skills questions...',
-  'Creating Use Case questions...',
-  'Designing Operational Readiness questions...',
+  'Building Questions',
   'Finalizing AI Governance questions...',
   'Personalizing your assessment...',
 ]
@@ -200,9 +195,6 @@ export default function AssessmentContextPage() {
                 <span className="mb-2 block text-sm font-semibold text-gray-700">
                   Your name
                 </span>
-                <p className="mb-2 text-sm text-slate-500">
-                  This will appear on your assessment report
-                </p>
                 <input
                   type="text"
                   placeholder="Enter your full name"
@@ -218,7 +210,7 @@ export default function AssessmentContextPage() {
                   Company name
                 </span>
                 <p className="mb-2 text-sm text-slate-500">
-                  Optional - helps us personalize your report
+                  Optional
                 </p>
                 <input
                   type="text"
@@ -234,7 +226,7 @@ export default function AssessmentContextPage() {
                   Email
                 </span>
                 <p className="mb-2 text-sm text-slate-500">
-                  Optional - for follow-up communications
+                  Optional
                 </p>
                 <input
                   type="email"

@@ -106,7 +106,6 @@ function validateQuestionsComprehensive(result) {
 export async function POST(request) {
   console.log('[generate-questions] POST request received')
   try {
-    // 1. Check Configuration
     if (!process.env.GROQ_API_KEY) {
       console.error('[CONFIG ERROR] Missing GROQ_API_KEY')
       return NextResponse.json({ error: 'AI service not configured.' }, { status: 500 })
