@@ -392,7 +392,7 @@ export default function AssessmentContextPage() {
         {isGenerating ? (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/20 px-6 backdrop-blur-sm">
             <div className="w-full max-w-xl rounded-xl border border-slate-200 bg-white p-8 shadow-2xl">
-              <p className="text-sm font-semibold uppercase tracking-wider text-cyan-700">
+              <p className="text-sm font-semibold uppercase tracking-wider text-gray-700">
                 Building your assessment
               </p>
               <h2 className="mt-3 text-2xl font-semibold text-slate-950">
@@ -401,7 +401,7 @@ export default function AssessmentContextPage() {
 
               <div className="mt-8 h-3 overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full rounded-full bg-cyan-600 transition-all duration-5000 ease-out"
+                  className="h-full rounded-full bg-gray-600 transition-all duration-5000 ease-out"
                   style={{ width: `${progress}%` }}
                 />
               </div>
