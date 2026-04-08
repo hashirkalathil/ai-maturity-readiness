@@ -5,6 +5,9 @@ import { generateQuestions } from '@/lib/groqQuestions'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { DIMENSION_ORDER } from '@/constants/dimensions'
 
+export const maxDuration = 60
+export const dynamic = 'force-dynamic'
+
 const rateLimitMap = new Map()
 
 function getClientIp(request) {
@@ -99,6 +102,15 @@ function validateQuestionsComprehensive(result) {
 
 export async function POST(request) {
   try {
+    if (!process.env.GROQ_API_KEY) {
+      console.error('[CONFIG ERROR] Missing GROQ_API_KEY')
+      return NextResponse.json({ error: 'AI service not configured.' }, { status: 500 })
+    }
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('[CONFIG ERROR] Missing SUPABASE_SERVICE_ROLE_KEY')
+      return NextResponse.json({ error: 'Database service not configured.' }, { status: 500 })
+    }
+
     const body = await request.json()
     const name = body?.name?.trim()
     const companyName = body?.companyName?.trim()
@@ -140,9 +152,9 @@ export async function POST(request) {
     try {
       validateQuestionsComprehensive(result)
     } catch (error) {
-      console.error('Validation failed:', error.message, 'Result:', result)
+      console.error('[VALIDATION ERROR]:', error.message, 'Result:', JSON.stringify(result).substring(0, 500))
       return NextResponse.json(
-        { error: 'Generated questions failed validation' },
+        { error: 'Generated questions failed quality check. Please try again.' },
         { status: 500 }
       )
     }
