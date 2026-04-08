@@ -7,6 +7,9 @@ import { DIMENSION_ORDER } from '@/constants/dimensions'
 
 export const maxDuration = 60
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
+console.log('[generate-questions] Module loaded')
 
 const rateLimitMap = new Map()
 
@@ -101,7 +104,9 @@ function validateQuestionsComprehensive(result) {
 }
 
 export async function POST(request) {
+  console.log('[generate-questions] POST request received')
   try {
+    // 1. Check Configuration
     if (!process.env.GROQ_API_KEY) {
       console.error('[CONFIG ERROR] Missing GROQ_API_KEY')
       return NextResponse.json({ error: 'AI service not configured.' }, { status: 500 })
@@ -110,8 +115,23 @@ export async function POST(request) {
       console.error('[CONFIG ERROR] Missing SUPABASE_SERVICE_ROLE_KEY')
       return NextResponse.json({ error: 'Database service not configured.' }, { status: 500 })
     }
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      console.error('[CONFIG ERROR] Missing NEXT_PUBLIC_SUPABASE_URL')
+      return NextResponse.json({ error: 'Database URL not configured.' }, { status: 500 })
+    }
 
-    const body = await request.json()
+    let body
+    try {
+      body = await request.json()
+      console.log('[generate-questions] Body parsed:', {
+        industry: body?.industry,
+        orgSize: body?.orgSize,
+        hasAnswers: !!body?.answers
+      })
+    } catch (e) {
+      console.error('[PARSE ERROR] Failed to parse request body:', e.message)
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+    }
     const name = body?.name?.trim()
     const companyName = body?.companyName?.trim()
     const email = body?.email?.trim()
@@ -140,11 +160,13 @@ export async function POST(request) {
     let result
 
     try {
+      console.log('[generate-questions] Calling generateQuestions...')
       result = await generateQuestions(industryLabel || industry, orgSize, companyName)
+      console.log('[generate-questions] generateQuestions completed successfully')
     } catch (error) {
-      console.error('Question generation failed:', error)
+      console.error('[AI ERROR] Question generation failed:', error.message)
       return NextResponse.json(
-        { error: 'Failed to generate questions' },
+        { error: `Failed to generate questions: ${error.message}` },
         { status: 500 }
       )
     }
