@@ -30,36 +30,16 @@ function applyResponseFilters(query, params) {
   return query
 }
 
-export default async function AdminResponsesPage({ searchParams }) {
+export default async function AdminResponsesPage() {
   await requireAdminSession()
-  const resolvedSearchParams = await searchParams
-  const page = Number(resolvedSearchParams.page || 1)
-  const filters = {
-    page,
-    search: resolvedSearchParams.search || '',
-    industry: resolvedSearchParams.industry || '',
-    level: resolvedSearchParams.level || '',
-    from: resolvedSearchParams.from || '',
-    to: resolvedSearchParams.to || '',
-  }
 
-  let query = supabaseAdmin
+  const { data: responses = [], count = 0 } = await supabaseAdmin
     .from('responses')
     .select(
-      'session_id, org_size, industry, overall_score, maturity_level, maturity_label, blocker_dimension, completed_at',
+      'session_id, org_size, industry, overall_score, maturity_level, maturity_label, blocker_dimension, completed_at, respondent_name, company_name, email, region',
       { count: 'exact' }
     )
     .order('completed_at', { ascending: false })
-  query = applyResponseFilters(query, filters).range((page - 1) * 20, page * 20 - 1)
-
-  const [{ data: responses = [], count = 0 }, { data: industries = [] }] =
-    await Promise.all([
-      query,
-      supabaseAdmin
-        .from('industries')
-        .select('slug, label')
-        .order('label', { ascending: true }),
-    ])
 
   return (
     <div className="space-y-6">
@@ -71,10 +51,8 @@ export default async function AdminResponsesPage({ searchParams }) {
 
       <ResponsesTable
         responses={responses}
-        industries={industries}
-        currentPage={page}
+        currentPage={1}
         totalPages={Math.max(1, Math.ceil(count / 20))}
-        filters={filters}
       />
     </div>
   )

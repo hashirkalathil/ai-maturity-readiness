@@ -122,7 +122,6 @@ function ReportPdfDocument({
   return (
     <Document title="AI Maturity Report">
 
-      {/* PAGE 1 */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed>
           <Text style={styles.headerText}>AI Maturity Report</Text>
@@ -172,7 +171,6 @@ function ReportPdfDocument({
         />
       </Page>
 
-      {/* PAGE 2 */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed>
           <Text style={styles.headerText}>AI Maturity Report</Text>
@@ -217,7 +215,6 @@ function ReportPdfDocument({
         />
       </Page>
 
-      {/* PAGE 3 */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header} fixed>
           <Text style={styles.headerText}>AI Maturity Report</Text>

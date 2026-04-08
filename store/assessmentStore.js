@@ -6,6 +6,8 @@ const initialState = {
   sessionId: null,
   respondentName: null,
   companyName: '',
+  email: '',
+  region: '',
   orgSize: null,
   industry: null,
   industryLabel: null,
@@ -19,10 +21,12 @@ const initialState = {
 
 export const useAssessmentStore = create((set, get) => ({
   ...initialState,
-  setContext: ({ name, companyName, orgSize, industry, industryLabel }) =>
+  setContext: ({ name, companyName, email, region, orgSize, industry, industryLabel }) =>
     set({
-      respondentName: name ?? companyName ?? null,
-      companyName: companyName ?? name ?? '',
+      respondentName: name || null,
+      companyName: companyName || '',
+      email: email || '',
+      region: region || '',
       orgSize,
       industry,
       industryLabel,

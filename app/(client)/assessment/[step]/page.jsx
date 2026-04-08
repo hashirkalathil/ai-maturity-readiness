@@ -15,6 +15,9 @@ export default function AssessmentStepPage() {
   const step = Number(params.step)
 
   const respondentName = useAssessmentStore((state) => state.respondentName)
+  const companyName = useAssessmentStore((state) => state.companyName)
+  const email = useAssessmentStore((state) => state.email)
+  const region = useAssessmentStore((state) => state.region)
   const orgSize = useAssessmentStore((state) => state.orgSize)
   const industry = useAssessmentStore((state) => state.industry)
   const industryLabel = useAssessmentStore((state) => state.industryLabel)
@@ -69,6 +72,9 @@ export default function AssessmentStepPage() {
         },
         body: JSON.stringify({
           name: respondentName,
+          companyName,
+          email,
+          region,
           orgSize,
           industry,
           industryLabel,

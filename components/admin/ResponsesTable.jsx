@@ -13,6 +13,10 @@ export default function ResponsesTable({ responses }) {
           <thead className="bg-slate-50">
             <tr>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Date</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Respondent</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Company</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Email</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Region</th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Industry</th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Org Size</th>
               <th className="px-6 py-4 text-left text-xs font-semibold uppercase text-slate-500">Score</th>
@@ -26,6 +30,22 @@ export default function ResponsesTable({ responses }) {
               <tr key={r.session_id}>
                 <td className="px-6 py-4 text-sm text-slate-600">
                   {new Date(r.completed_at).toLocaleDateString()}
+                </td>
+
+                <td className="px-6 py-4 text-sm text-slate-900">
+                  {r.respondent_name || '-'}
+                </td>
+
+                <td className="px-6 py-4 text-sm text-slate-900">
+                  {r.company_name || '-'}
+                </td>
+
+                <td className="px-6 py-4 text-sm text-slate-900">
+                  {r.email || '-'}
+                </td>
+
+                <td className="px-6 py-4 text-sm text-slate-600">
+                  {r.region || '-'}
                 </td>
 
                 <td className="px-6 py-4 text-sm text-slate-900">

@@ -20,17 +20,14 @@ export default function OpportunityCard({ opportunity, step }) {
           </span>
         </div>
 
-        {/* Title */}
         <h3 className="text-sm font-semibold text-slate-900">
           {opportunity.title}
         </h3>
 
-        {/* Description */}
         <p className="mt-1 text-sm text-slate-600">
           {opportunity.description}
         </p>
 
-        {/* Meta info */}
         <div className="w-full mt-2 flex flex-wrap justify-between gap-6 text-xs">
           <div className='flex flex-1 flex-row gap-2'>
             <span className="text-emerald-700 font-semibold">

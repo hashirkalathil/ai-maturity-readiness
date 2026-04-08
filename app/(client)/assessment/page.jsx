@@ -13,6 +13,19 @@ const sizeOptions = [
   { value: '1000+', label: '1,000+ employees' },
 ]
 
+const regionOptions = [
+  'United States',
+  'Canada',
+  'United Kingdom',
+  'Germany',
+  'France',
+  'Australia',
+  'Japan',
+  'India',
+  'Brazil',
+  'Other',
+]
+
 const generationMessages = [
   'Crafting Business Strategy questions...',
   'Preparing Data Readiness questions...',
@@ -35,6 +48,10 @@ export default function AssessmentContextPage() {
 
   const [industries, setIndustries] = useState([])
   const [name, setName] = useState('')
+  const [companyName, setCompanyName] = useState('')
+  const [email, setEmail] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState('')
+  const [customIndustry, setCustomIndustry] = useState('')
   const [selectedIndustry, setSelectedIndustry] = useState(null)
   const [selectedOrgSize, setSelectedOrgSize] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -108,9 +125,12 @@ export default function AssessmentContextPage() {
         },
         body: JSON.stringify({
           name: name.trim(),
+          companyName: companyName.trim(),
+          email: email?.trim(),
+          region: selectedRegion,
           industry: selectedIndustry.slug,
-          orgSize: selectedOrgSize,
           industryLabel: selectedIndustry.label,
+          orgSize: selectedOrgSize,
         }),
       })
       const data = await response.json()
@@ -123,6 +143,9 @@ export default function AssessmentContextPage() {
       setProgress(100)
       setContext({
         name: name.trim(),
+        companyName: companyName.trim(),
+        email: email?.trim(),
+        region: selectedRegion,
         orgSize: selectedOrgSize,
         industry: selectedIndustry.slug,
         industryLabel: selectedIndustry.label,
@@ -171,23 +194,57 @@ export default function AssessmentContextPage() {
                 Organization details
               </h2>
             </div>
-            
-            <label className="block max-w-md">
-              <span className="mb-2 block text-sm font-semibold text-gray-700">
-                Your name
-              </span>
-              <p className="mb-2 text-sm text-slate-500">
-                This will appear on your assessment report
-              </p>
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
-              />
-            </label>
+
+            <div className="space-y-6 max-w-md">
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-gray-700">
+                  Your name
+                </span>
+                <p className="mb-2 text-sm text-slate-500">
+                  This will appear on your assessment report
+                </p>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-gray-700">
+                  Company name
+                </span>
+                <p className="mb-2 text-sm text-slate-500">
+                  Optional - helps us personalize your report
+                </p>
+                <input
+                  type="text"
+                  placeholder="Enter your company name"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-semibold text-gray-700">
+                  Email
+                </span>
+                <p className="mb-2 text-sm text-slate-500">
+                  Optional - for follow-up communications
+                </p>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+                />
+              </label>
+            </div>
           </div>
 
           <div
@@ -225,6 +282,37 @@ export default function AssessmentContextPage() {
                     </button>
                   )
                 })}
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndustry({ slug: 'other', label: 'Other' })}
+                  className={`rounded-xl border p-2 text-center transition ${selectedIndustry?.slug === 'other'
+                    ? 'border-gray-950 bg-gray-950 shadow-lg shadow-gray-100'
+                    : 'border-gray-200 bg-white hover:border-gray-600 hover:bg-gray-100'
+                    }`}
+                >
+                  <div className="flex flex-row items-center gap-3">
+                    <h3 className={`text-sm mx-auto font-semibold ${selectedIndustry?.slug === 'other' ? 'text-white' : 'text-slate-900'}`}>
+                      Other
+                    </h3>
+                  </div>
+                </button>
+              </div>
+            )}
+            {selectedIndustry?.slug === 'other' && (
+              <div className="mt-4">
+                <label className="block">
+                  <span className="mb-2 block text-sm font-semibold text-gray-700">
+                    Specify your industry
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Enter your industry"
+                    value={customIndustry}
+                    onChange={(e) => setCustomIndustry(e.target.value)}
+                    required
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-100"
+                  />
+                </label>
               </div>
             )}
           </div>
@@ -260,6 +348,37 @@ export default function AssessmentContextPage() {
             </div>
           </div>
 
+          <div
+            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+            suppressHydrationWarning
+          >
+            <div className="mb-6" suppressHydrationWarning>
+              <h2 className="text-2xl font-semibold text-slate-950">
+                Region
+              </h2>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-4" suppressHydrationWarning>
+              {regionOptions.map((option) => {
+                const isSelected = selectedRegion === option
+
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setSelectedRegion(option)}
+                    className={`rounded-2xl border p-2 text-sm font-semibold transition ${isSelected
+                      ? 'border-gray-950 bg-gray-950 text-white'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400'
+                      }`}
+                  >
+                    {option}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           {error ? (
             <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
@@ -280,20 +399,17 @@ export default function AssessmentContextPage() {
 
         {isGenerating ? (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/20 px-6 backdrop-blur-sm">
-            <div className="w-full max-w-xl rounded-[2rem] border border-slate-200 bg-white p-8 shadow-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">
+            <div className="w-full max-w-xl rounded-xl border border-slate-200 bg-white p-8 shadow-2xl">
+              <p className="text-sm font-semibold uppercase tracking-wider text-cyan-700">
                 Building your assessment
               </p>
               <h2 className="mt-3 text-2xl font-semibold text-slate-950">
                 Personalizing your questions
               </h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">
-                We&apos;re tailoring a 16-question assessment to your industry and organization size.
-              </p>
 
               <div className="mt-8 h-3 overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full rounded-full bg-cyan-600 transition-all duration-[5000ms] ease-out"
+                  className="h-full rounded-full bg-cyan-600 transition-all duration-5000 ease-out"
                   style={{ width: `${progress}%` }}
                 />
               </div>
