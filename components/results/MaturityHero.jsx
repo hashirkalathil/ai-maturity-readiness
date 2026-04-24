@@ -26,12 +26,10 @@ export default function MaturityHero({
         >
           {maturityLevel}
         </div>
-        <div className='flex flex-row items-center gap-2'>
-          <p className="mt-6 text-xl font-semibold uppercase tracking-wider text-gray-800">
-            Level = {maturityLabel}
-          </p>
-        </div>
-        <p className="mt-4 text-xl font-bold text-gray-900 bg-gray-200 px-2 py-1 rounded-full">
+        <p className="mt-6 text-xl font-semibold uppercase tracking-wider text-gray-800">
+          Level {maturityLevel}: {maturityLabel}
+        </p>
+        <p className="mt-4 text-2xl font-bold text-white bg-gray-900 px-4 py-2 rounded-full">
           {`${Number(overallScore).toFixed(1)} / 5.0`}
         </p>
         {blockerApplied ? (
@@ -43,11 +41,11 @@ export default function MaturityHero({
             {`Raw score ${Number(rawOverallScore).toFixed(2)}`}
           </p>
         )}
-        <p className="mt-6 text-left text-md text-slate-800">
+        <p className="mt-6 text-left text-base text-slate-800 leading-relaxed">
           {executiveSummary}
         </p>
         {maturityNarrative ? (
-          <p className="mt-4 text-left text-md text-slate-800">
+          <p className="mt-4 text-left text-base text-slate-800 leading-relaxed">
             {maturityNarrative}
           </p>
         ) : null}

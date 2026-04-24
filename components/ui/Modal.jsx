@@ -33,7 +33,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm transition-opacity duration-300"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm transition-opacity duration-300"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

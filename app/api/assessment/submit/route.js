@@ -4,7 +4,7 @@ import {
   DIMENSION_WEIGHTS,
   MATURITY_LEVELS,
 } from '@/constants/dimensions'
-import { generateGroqReport } from '@/lib/groqReport'
+import { generateGeminiReport } from '@/lib/geminiReport'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
 function roundToTwo(value) {
@@ -128,6 +128,7 @@ function runScoringPipeline(answers, questions) {
 }
 
 export async function POST(request) {
+  console.log('[submit] POST /api/assessment/submit received')
   try {
     const body = await request.json()
     const {
@@ -143,7 +144,16 @@ export async function POST(request) {
       questions: fallbackQuestions,
     } = body || {}
 
+    console.log('[submit] Request body parsed:', {
+      sessionId,
+      orgSize,
+      industry,
+      answerCount: Object.keys(answers || {}).length,
+      questionCount: fallbackQuestions?.length || 0,
+    })
+
     if (!orgSize || !industry || !answers || !Object.keys(answers).length) {
+      console.log('[submit] Validation failed: missing required fields')
       return NextResponse.json(
         { error: 'Organization size, industry, and answers are required.' },
         { status: 400 }
@@ -151,9 +161,21 @@ export async function POST(request) {
     }
 
     if (!sessionId) {
+      console.log('[submit] Validation failed: missing sessionId')
       return NextResponse.json({ error: 'sessionId required' }, { status: 400 })
     }
 
+    if (!name || !name.trim()) {
+      console.log('[submit] Validation failed: missing respondent name')
+      return NextResponse.json({ error: 'Respondent name is required.' }, { status: 400 })
+    }
+
+    if (!companyName || !companyName.trim()) {
+      console.log('[submit] Validation failed: missing company name')
+      return NextResponse.json({ error: 'Company name is required.' }, { status: 400 })
+    }
+
+    console.log('[submit] Fetching session data from database...')
     const [{ data: sessionData }, industryResult] = await Promise.all([
       supabaseAdmin
         .from('session_questions')
@@ -167,12 +189,20 @@ export async function POST(request) {
         .single(),
     ])
 
+    console.log('[submit] Database queries completed:', {
+      sessionDataFound: !!sessionData,
+      sessionQuestionCount: sessionData?.questions?.length || 0,
+      industryFound: !!industryResult?.data,
+    })
+
     const questions = sessionData?.questions || fallbackQuestions || []
 
     if (!questions.length) {
+      console.log('[submit] Validation failed: no questions found')
       return NextResponse.json({ error: 'Session not found' }, { status: 400 })
     }
 
+    console.log('[submit] Building enriched answers...')
     const enrichedAnswers = Object.entries(answers).map(([questionId, score]) => {
       const question = questions.find(q => String(q.id) === String(questionId))
       if (!question) return null
@@ -187,14 +217,23 @@ export async function POST(request) {
       }
     }).filter(Boolean)
 
+    console.log('[submit] Running scoring pipeline...')
     const scoring = runScoringPipeline(answers, questions)
+    console.log('[submit] Scoring complete:', {
+      dimensionCount: Object.keys(scoring.dimensionScores).length,
+      overallScore: scoring.overallScore,
+      maturityLevel: scoring.maturityLevel,
+    })
+
     const resolvedIndustryLabel = industryLabel || industryResult.data?.label || industry
 
     let report
 
+    console.log('[submit] Generating Gemini report...')
     try {
-      report = await generateGroqReport({
-        companyName: name || companyName,
+      const startTime = Date.now()
+      report = await generateGeminiReport({
+        companyName: companyName || name,
         orgSize,
         industry,
         industryLabel: resolvedIndustryLabel,
@@ -208,7 +247,10 @@ export async function POST(request) {
         answers,
         questions,
       })
-    } catch {
+      const elapsed = Date.now() - startTime
+      console.log('[submit] Gemini report generated successfully in', elapsed, 'ms')
+    } catch (reportError) {
+      console.error('[submit] Gemini report generation failed, using fallback:', reportError.message)
       report = {
         executiveSummary: `Assessment completed for ${resolvedIndustryLabel} with a Level ${scoring.maturityLevel} (${scoring.maturityLabel}) profile.`,
         maturityNarrative:
@@ -228,6 +270,7 @@ export async function POST(request) {
       }
     }
 
+    console.log('[submit] Inserting response into database...')
     const { error } = await supabaseAdmin.from('responses').insert({
       session_id: sessionId,
       respondent_name: name || null,
@@ -236,6 +279,7 @@ export async function POST(request) {
       region: region || null,
       org_size: orgSize,
       industry,
+      industry_name: resolvedIndustryLabel,
       answers: enrichedAnswers,
       dimension_scores: scoring.dimensionScores,
       raw_overall_score: scoring.rawOverallScore,
@@ -248,11 +292,14 @@ export async function POST(request) {
     })
 
     if (error) {
+      console.error('[submit] Database insert error:', error.message)
       throw error
     }
 
+    console.log('[submit] Response successfully inserted. Returning sessionId:', sessionId)
     return NextResponse.json({ sessionId })
   } catch (error) {
+    console.error('[submit] Unexpected error:', error.message || error)
     return NextResponse.json(
       { error: error.message || 'Unable to submit assessment.' },
       { status: 500 }

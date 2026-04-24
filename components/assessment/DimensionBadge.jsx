@@ -1,6 +1,6 @@
 'use client'
 
-import { DIMENSION_LABELS } from '@/constants/dimensions'
+import { DIMENSION_LABELS } from '@/lib/geminiQuestions'
 
 const dimensionStyles = {
   businessStrategy: 'bg-cyan-100 text-cyan-800',
